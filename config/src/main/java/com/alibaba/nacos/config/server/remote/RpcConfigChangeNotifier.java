@@ -108,7 +108,7 @@ public class RpcConfigChangeNotifier extends Subscriber<LocalDataChangeEvent> {
             if (StringUtils.isNotBlank(tag) && !tag.equals(clientTag)) {
                 continue;
             }
-            
+            //dataId group tenant
             ConfigChangeNotifyRequest notifyRequest = ConfigChangeNotifyRequest.build(dataId, group, tenant);
             
             RpcPushTask rpcPushRetryTask = new RpcPushTask(notifyRequest,

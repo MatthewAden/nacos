@@ -1,0 +1,46 @@
+@startuml
+participant Actor
+Actor -> ConfigOperationService : publishConfig
+activate ConfigOperationService
+ConfigOperationService -> ConfigInfoPersistService : insertOrUpdateCas
+activate ConfigInfoPersistService
+ConfigInfoPersistService --> ConfigOperationService
+deactivate ConfigInfoPersistService
+ConfigOperationService -> ConfigInfoPersistService : insertOrUpdate
+activate ConfigInfoPersistService
+ConfigInfoPersistService --> ConfigOperationService
+deactivate ConfigInfoPersistService
+ConfigOperationService -> ConfigInfoTagPersistService : insertOrUpdateTagCas
+activate ConfigInfoTagPersistService
+ConfigInfoTagPersistService --> ConfigOperationService
+deactivate ConfigInfoTagPersistService
+ConfigOperationService -> ConfigInfoTagPersistService : insertOrUpdateTag
+activate ConfigInfoTagPersistService
+ConfigInfoTagPersistService --> ConfigOperationService
+deactivate ConfigInfoTagPersistService
+ConfigOperationService -> ConfigInfoBetaPersistService : insertOrUpdateBetaCas
+activate ConfigInfoBetaPersistService
+ConfigInfoBetaPersistService --> ConfigOperationService
+deactivate ConfigInfoBetaPersistService
+ConfigOperationService -> ConfigInfoBetaPersistService : insertOrUpdateBeta
+activate ConfigInfoBetaPersistService
+ConfigInfoBetaPersistService --> ConfigOperationService
+deactivate ConfigInfoBetaPersistService
+ConfigOperationService -> ConfigTraceService : logPersistenceEvent
+activate ConfigTraceService
+ConfigTraceService -> MD5Utils : md5Hex
+activate MD5Utils
+MD5Utils -> MD5Utils : md5Hex
+activate MD5Utils
+MD5Utils -> MD5Utils : encodeHexString
+activate MD5Utils
+MD5Utils --> MD5Utils
+deactivate MD5Utils
+MD5Utils --> MD5Utils
+deactivate MD5Utils
+MD5Utils --> ConfigTraceService
+deactivate MD5Utils
+ConfigTraceService --> ConfigOperationService
+deactivate ConfigTraceService
+return
+@enduml

@@ -262,6 +262,7 @@ public abstract class DumpService {
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
             
             try {
+                //重启时会从数据库拉取数据，删除本地文件和缓存，全部配置和部分配置的区别？
                 dumpAllConfigInfoOnStartup(dumpAllProcessor);
                 
                 // update Beta cache
@@ -300,7 +301,7 @@ public abstract class DumpService {
                 Random random = new Random();
                 long initialDelay = random.nextInt(INITIAL_DELAY_IN_MINUTE) + 10;
                 LogUtil.DEFAULT_LOG.warn("initialDelay:{}", initialDelay);
-                
+                //dump全量缓存
                 ConfigExecutor.scheduleConfigTask(new DumpAllProcessorRunner(), initialDelay,
                         DUMP_ALL_INTERVAL_IN_MINUTE, TimeUnit.MINUTES);
                 
@@ -309,13 +310,14 @@ public abstract class DumpService {
                 
                 ConfigExecutor.scheduleConfigTask(new DumpAllTagProcessorRunner(), initialDelay,
                         DUMP_ALL_INTERVAL_IN_MINUTE, TimeUnit.MINUTES);
+                //30s dump增量对账
                 ConfigExecutor.scheduleConfigChangeTask(
                         new DumpChangeConfigWorker(this.configInfoPersistService, this.historyConfigInfoPersistService,
                                 currentTime), random.nextInt((int) PropertyUtil.getDumpChangeWorkerInterval()),
                         TimeUnit.MILLISECONDS);
                 
             }
-            
+            //历史记录清除
             ConfigExecutor.scheduleConfigTask(new ConfigHistoryClear(), 10, 10, TimeUnit.MINUTES);
         } finally {
             TimerContext.end(dumpFileContext, LogUtil.DUMP_LOG);
@@ -413,6 +415,7 @@ public abstract class DumpService {
     private void dumpBeta(String dataId, String group, String tenant, long lastModified, String handleIp) {
         String groupKey = GroupKey2.getKey(dataId, group, tenant);
         String taskKey = groupKey + "+beta";
+        //DumpProcessor处理器
         dumpTaskMgr.addTask(taskKey, new DumpTask(groupKey, true, false, false, null, lastModified, handleIp));
         DUMP_LOG.info("[dump] add beta task. groupKey={}", groupKey);
         

@@ -360,6 +360,10 @@
                         <exclude>**/filter-config.json</exclude>
                         <exclude>**/disk_cache_test/**</exclude>
                         <exclude>**/failover_test/**</exclude>
+                        <exclude>**/target/checkstyle-cachefile</exclude>
+                        <exclude>**/target/checkstyle-result.xml</exclude>
+                        <exclude>**/target/maven-status/maven-compiler-plugin/compile/default-compile/*</exclude>
+                        <!-- 其他需要忽略的文件或目录 -->
                     </excludes>
                 </configuration>
                 <executions>

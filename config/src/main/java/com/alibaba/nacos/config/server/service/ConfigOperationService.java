@@ -75,7 +75,7 @@ public class ConfigOperationService {
      */
     public Boolean publishConfig(ConfigForm configForm, ConfigRequestInfo configRequestInfo, String encryptedDataKey)
             throws NacosException {
-        
+        //配置类型：例如：type -> text
         Map<String, Object> configAdvanceInfo = getConfigAdvanceInfo(configForm);
         ParamUtils.checkParam(configAdvanceInfo);
         
@@ -85,10 +85,11 @@ public class ConfigOperationService {
             throw new NacosApiException(HttpStatus.FORBIDDEN.value(), ErrorCode.INVALID_DATA_ID,
                     "dataId:" + configForm.getDataId() + " is aggr");
         }
-        
+
+        //根据配置内容会生成一个md5值，
         ConfigInfo configInfo = new ConfigInfo(configForm.getDataId(), configForm.getGroup(),
                 configForm.getNamespaceId(), configForm.getAppName(), configForm.getContent());
-        //set old md5
+        //set old md5（一般不带）
         if (StringUtils.isNotBlank(configRequestInfo.getCasMd5())) {
             configInfo.setMd5(configRequestInfo.getCasMd5());
         }
@@ -100,6 +101,7 @@ public class ConfigOperationService {
         
         if (StringUtils.isBlank(configRequestInfo.getBetaIps())) {
             if (StringUtils.isBlank(configForm.getTag())) {
+                // CasMd5的作用是什么？
                 if (StringUtils.isNotBlank(configRequestInfo.getCasMd5())) {
                     configOperateResult = configInfoPersistService.insertOrUpdateCas(configRequestInfo.getSrcIp(),
                             configForm.getSrcUser(), configInfo, configAdvanceInfo);
@@ -140,7 +142,7 @@ public class ConfigOperationService {
                                 configOperateResult.getLastModified()));
             }
         } else {
-            // beta publish
+            // beta publish 灰度转正式发布 POST 请求
             if (StringUtils.isNotBlank(configRequestInfo.getCasMd5())) {
                 configOperateResult = configInfoBetaPersistService.insertOrUpdateBetaCas(configInfo,
                         configRequestInfo.getBetaIps(), configRequestInfo.getSrcIp(), configForm.getSrcUser());
@@ -151,6 +153,7 @@ public class ConfigOperationService {
                     throw new NacosApiException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.RESOURCE_CONFLICT,
                             "Cas publish beta config fail, server md5 may have changed.");
                 }
+                // 发布 Beta 配置
             } else {
                 configOperateResult = configInfoBetaPersistService.insertOrUpdateBeta(configInfo,
                         configRequestInfo.getBetaIps(), configRequestInfo.getSrcIp(), configForm.getSrcUser());

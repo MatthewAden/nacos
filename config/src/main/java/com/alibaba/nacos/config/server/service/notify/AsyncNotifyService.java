@@ -97,7 +97,7 @@ public class AsyncNotifyService {
             }
         });
     }
-    
+    //发送水平通知
     void handleConfigDataChangeEvent(Event event) {
         if (event instanceof ConfigDataChangeEvent) {
             ConfigDataChangeEvent evt = (ConfigDataChangeEvent) event;

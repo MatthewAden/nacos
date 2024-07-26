@@ -195,7 +195,7 @@ public class ConfigCacheService {
         
         try {
             
-            //check timestamp
+            //check timestamp 缓存落后于数据库的时间
             boolean timestampOutDated = lastModifiedTs < ConfigCacheService.getBetaLastModifiedTs(groupKey);
             if (timestampOutDated) {
                 DUMP_LOG.warn("[dump-beta-ignore] timestamp is outdated,groupKey={}", groupKey);
@@ -206,6 +206,7 @@ public class ConfigCacheService {
             
             String[] betaIpsArr = betaIps.split(",");
             List<String> betaIpList = Lists.newArrayList(betaIpsArr);
+            //根据内容生成新的MD5值,md5没变，说明内容没变
             String md5 = MD5Utils.md5Hex(content, ENCODE_UTF8);
             
             //md5 check & update local disk cache.

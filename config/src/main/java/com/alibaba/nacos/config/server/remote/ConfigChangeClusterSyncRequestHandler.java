@@ -47,6 +47,7 @@ public class ConfigChangeClusterSyncRequestHandler
     @TpsControl(pointName = "ClusterConfigChangeNotify")
     @Override
     @ExtractorManager.Extractor(rpcExtractor = ConfigRequestParamExtractor.class)
+    //处理水平通知
     public ConfigChangeClusterSyncResponse handle(ConfigChangeClusterSyncRequest configChangeSyncRequest,
             RequestMeta meta) throws NacosException {
     

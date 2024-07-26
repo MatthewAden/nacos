@@ -39,7 +39,7 @@ public class DumpAllBetaProcessor implements NacosTaskProcessor {
     public DumpAllBetaProcessor(ConfigInfoBetaPersistService configInfoBetaPersistService) {
         this.configInfoBetaPersistService = configInfoBetaPersistService;
     }
-    
+    //全量 Dump 灰度配置
     @Override
     public boolean process(NacosTask task) {
         int rowCount = configInfoBetaPersistService.configInfoBetaCount();

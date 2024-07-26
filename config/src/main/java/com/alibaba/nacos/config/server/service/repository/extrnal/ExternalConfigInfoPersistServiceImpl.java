@@ -141,6 +141,7 @@ public class ExternalConfigInfoPersistServiceImpl implements ConfigInfoPersistSe
             final Map<String, Object> configAdvanceInfo) {
         return tjt.execute(status -> {
             try {
+                //向 configInfo 插入数据
                 long configId = addConfigInfoAtomic(-1, srcIp, srcUser, configInfo, configAdvanceInfo);
                 String configTags = configAdvanceInfo == null ? null : (String) configAdvanceInfo.get("config_tags");
                 addConfigTagsRelation(configId, configTags, configInfo.getDataId(), configInfo.getGroup(),
@@ -148,6 +149,7 @@ public class ExternalConfigInfoPersistServiceImpl implements ConfigInfoPersistSe
                 Timestamp now = new Timestamp(System.currentTimeMillis());
                 
                 historyConfigInfoPersistService.insertConfigHistoryAtomic(0, configInfo, srcIp, srcUser, now, "I");
+                //只会查到唯一一条数据
                 ConfigInfoStateWrapper configInfoCurrent = this.findConfigInfoState(configInfo.getDataId(),
                         configInfo.getGroup(), configInfo.getTenant());
                 if (configInfoCurrent == null) {

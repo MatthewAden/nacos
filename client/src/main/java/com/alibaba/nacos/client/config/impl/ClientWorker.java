@@ -668,7 +668,7 @@ public class ClientWorker implements Closeable {
                     configChangeNotifyRequest.getTenant());
             String groupKey = GroupKey.getKeyTenant(configChangeNotifyRequest.getDataId(),
                     configChangeNotifyRequest.getGroup(), configChangeNotifyRequest.getTenant());
-            
+            //收到了服务端通知
             CacheData cacheData = cacheMap.get().get(groupKey);
             if (cacheData != null) {
                 synchronized (cacheData) {
@@ -686,7 +686,7 @@ public class ClientWorker implements Closeable {
             response.setMetrics(getMetrics(configMetricRequest.getMetricsKeys()));
             return response;
         }
-        
+        //处理配置变更请求
         private void initRpcClientHandler(final RpcClient rpcClientInner) {
             /*
              * Register Config Change /Config ReSync Handler
@@ -821,12 +821,12 @@ public class ClientWorker implements Closeable {
                             continue;
                         }
                     }
-                    
+                    //为什么？
                     // If local configuration information is used, then skip the processing directly.
                     if (cache.isUseLocalConfigInfo()) {
                         continue;
                     }
-                    
+                    //新增listener时为false
                     if (!cache.isDiscard()) {
                         List<CacheData> cacheDatas = listenCachesMap.computeIfAbsent(String.valueOf(cache.getTaskId()),
                                 k -> new LinkedList<>());

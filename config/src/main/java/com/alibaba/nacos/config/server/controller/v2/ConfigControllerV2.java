@@ -134,11 +134,13 @@ public class ConfigControllerV2 {
         if (!ConfigType.isValidType(configForm.getType())) {
             configForm.setType(ConfigType.getDefaultType().getType());
         }
-    
+
+        //请求相关信息
         ConfigRequestInfo configRequestInfo = new ConfigRequestInfo();
         configRequestInfo.setSrcIp(RequestUtil.getRemoteIp(request));
         configRequestInfo.setRequestIpApp(RequestUtil.getAppName(request));
         configRequestInfo.setBetaIps(request.getHeader("betaIps"));
+        //请求头的 MD5 在哪？
         configRequestInfo.setCasMd5(request.getHeader("casMd5"));
     
         String encryptedDataKey = pair.getFirst();

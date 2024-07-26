@@ -1,0 +1,58 @@
+@startuml
+participant Actor
+Actor -> DumpChangeConfigWorker : run
+activate DumpChangeConfigWorker
+DumpChangeConfigWorker -> HistoryConfigInfoPersistService : findDeletedConfig
+activate HistoryConfigInfoPersistService
+HistoryConfigInfoPersistService --> DumpChangeConfigWorker
+deactivate HistoryConfigInfoPersistService
+DumpChangeConfigWorker -> ConfigInfoPersistService : findConfigInfoState
+activate ConfigInfoPersistService
+ConfigInfoPersistService --> DumpChangeConfigWorker
+deactivate ConfigInfoPersistService
+DumpChangeConfigWorker -> ConfigCacheService : remove
+activate ConfigCacheService
+ConfigCacheService -> ConfigDiskService : removeConfigInfo
+activate ConfigDiskService
+ConfigDiskService --> ConfigCacheService
+deactivate ConfigDiskService
+ConfigCacheService -> NotifyCenter : publishEvent
+activate NotifyCenter
+NotifyCenter --> ConfigCacheService
+deactivate NotifyCenter
+ConfigCacheService --> DumpChangeConfigWorker
+deactivate ConfigCacheService
+DumpChangeConfigWorker -> ConfigInfoPersistService : findChangeConfig
+activate ConfigInfoPersistService
+ConfigInfoPersistService --> DumpChangeConfigWorker
+deactivate ConfigInfoPersistService
+activate ConfigCacheService
+ConfigCacheService --> DumpChangeConfigWorker
+deactivate ConfigCacheService
+DumpChangeConfigWorker -> ConfigInfoPersistService : findConfigInfo
+activate ConfigInfoPersistService
+ConfigInfoPersistService --> DumpChangeConfigWorker
+deactivate ConfigInfoPersistService
+DumpChangeConfigWorker -> ConfigCacheService : dump
+ConfigCacheService -> ConfigDiskService : saveToDisk
+activate ConfigDiskService
+ConfigDiskService --> ConfigCacheService
+deactivate ConfigDiskService
+ConfigCacheService -> ConfigCacheService : updateMd5
+activate ConfigCacheService
+ConfigCacheService -> NotifyCenter : publishEvent
+activate NotifyCenter
+NotifyCenter --> ConfigCacheService
+deactivate NotifyCenter
+
+
+
+
+ConfigCacheService --> DumpChangeConfigWorker
+deactivate ConfigCacheService
+DumpChangeConfigWorker -> ConfigExecutor : scheduleConfigChangeTask
+activate ConfigExecutor
+ConfigExecutor --> DumpChangeConfigWorker
+deactivate ConfigExecutor
+return
+@enduml

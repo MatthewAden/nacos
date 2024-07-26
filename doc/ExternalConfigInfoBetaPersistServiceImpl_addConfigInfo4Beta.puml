@@ -1,0 +1,26 @@
+@startuml
+participant Actor
+Actor -> ExternalConfigInfoBetaPersistServiceImpl : addConfigInfo4Beta
+activate ExternalConfigInfoBetaPersistServiceImpl
+ExternalConfigInfoBetaPersistServiceImpl -> MapperManager : findMapper
+activate MapperManager
+MapperManager -> MapperProxy : createSingleProxy
+activate MapperProxy
+MapperProxy --> MapperManager
+deactivate MapperProxy
+MapperManager --> ExternalConfigInfoBetaPersistServiceImpl
+deactivate MapperManager
+ExternalConfigInfoBetaPersistServiceImpl -> Mapper : insert
+activate Mapper
+Mapper --> ExternalConfigInfoBetaPersistServiceImpl
+deactivate Mapper
+ExternalConfigInfoBetaPersistServiceImpl -> ExternalConfigInfoBetaPersistServiceImpl : getBetaOperateResult
+activate ExternalConfigInfoBetaPersistServiceImpl
+ExternalConfigInfoBetaPersistServiceImpl -> ExternalConfigInfoBetaPersistServiceImpl : findConfigInfo4BetaState
+activate ExternalConfigInfoBetaPersistServiceImpl
+ExternalConfigInfoBetaPersistServiceImpl --> ExternalConfigInfoBetaPersistServiceImpl
+deactivate ExternalConfigInfoBetaPersistServiceImpl
+ExternalConfigInfoBetaPersistServiceImpl --> ExternalConfigInfoBetaPersistServiceImpl
+deactivate ExternalConfigInfoBetaPersistServiceImpl
+return
+@enduml
